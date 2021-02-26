@@ -26,8 +26,16 @@ void ensureWifiConnection() {
   if(WiFi.status() == WL_CONNECTED)
     return;
 
+  // When the connection to the wifi started
+  long startConnecting = millis();
+
   // Waits until the wifi status is connected
   while (WiFi.status() != WL_CONNECTED) {
+    // Checks if the device has been connecting to the wifi for longer than 1 minute
+    if(millis()-startConnecting > 1000 * 60)
+      // Restarts the esp
+      ESP.restart();
+
     display.clearLine(3);
     display.setCursor(1,3);
     display.print("Wlan...."+WiFi.status());
